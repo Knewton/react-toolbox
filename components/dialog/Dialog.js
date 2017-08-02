@@ -34,7 +34,7 @@ const factory = (Overlay, Button) => {
           themeNamespace="overlay"
         />
         <div data-react-toolbox="dialog" className={className}>
-          <section role="body" className={props.theme.body}>
+          <section role="complementary" className={props.theme.body}>
             {props.title ? <h6 className={props.theme.title}>{props.title}</h6> : null}
             {props.children}
           </section>
