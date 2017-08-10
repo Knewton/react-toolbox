@@ -11,6 +11,7 @@ class TabContent extends Component {
     children: PropTypes.node,
     className: PropTypes.string,
     click: PropTypes.bool,
+    hidden: PropTypes.bool,
     tabIndex: PropTypes.number,
     theme: PropTypes.shape({
       active: PropTypes.string,
@@ -21,6 +22,7 @@ class TabContent extends Component {
   static defaultProps = {
     active: false,
     className: '',
+    hidden: true,
   };
 
   componentDidMount() {
@@ -38,6 +40,8 @@ class TabContent extends Component {
       <section
         className={className}
         tabIndex={this.props.tabIndex}
+        aria-expanded={this.props.hidden}
+        role="tabpanel"
       >
         {this.props.children}
       </section>
