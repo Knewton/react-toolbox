@@ -1,7 +1,7 @@
 {
   "name": "accessible-react-toolbox",
   "description": "Built upon React Toolbox with accessibility in mind, a set of React components implementing Google's Material Design specification with the power of CSS Modules.",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "main": "./lib",
   "module": "./components",
   "repository": {
