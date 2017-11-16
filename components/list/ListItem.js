@@ -35,7 +35,9 @@ const factory = (ripple, ListItemLayout, ListItemContent) => {
     };
 
     handleClick = (event) => {
-      if (this.props.to) {
+      if (this.props.to && this.isModifiedEvent(event)) {
+        return;
+      } else if (this.props.to) {
         event.preventDefault();
       }
       if (this.props.onClick && !this.props.disabled) {
@@ -48,6 +50,13 @@ const factory = (ripple, ListItemLayout, ListItemContent) => {
         event.preventDefault();
         this.handleClick(event);
       }
+    };
+
+    isModifiedEvent = (event) => {
+      if (event.metaKey || event.altKey || event.ctrlKey || event.shiftKey) {
+        return true;
+      }
+      return false;
     };
 
     groupChildren() {
@@ -108,9 +117,9 @@ const factory = (ripple, ListItemLayout, ListItemContent) => {
           onMouseDown={onMouseDown}
           onTouchStart={onTouchStart}
           onKeyDown={this.handleEnter}
-          tabIndex={tabIndex}
+          tabIndex={to || !onClick ? -1 : tabIndex}
         >
-          {to ? <a tabIndex={-1} href={this.props.to}>{content}</a> : content}
+          {to ? <a href={this.props.to}>{content}</a> : content}
           {children.ignored}
           {altText ? <span className={theme.screenReader}>{altText}</span> : null}
         </li>
