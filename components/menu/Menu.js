@@ -24,6 +24,7 @@ const factory = (MenuItem) => {
       active: PropTypes.bool,
       children: PropTypes.node,
       className: PropTypes.string,
+      focusMenu: PropTypes.bool,
       onHide: PropTypes.func,
       onSelect: PropTypes.func,
       onShow: PropTypes.func,
@@ -180,6 +181,12 @@ const factory = (MenuItem) => {
       return `${toTop ? 'top' : 'bottom'}${toLeft ? 'Left' : 'Right'}`;
     }
 
+    focusFirstMenuItem() {
+      if (this.props.focusMenu) {
+        [...this.menuNode.querySelectorAll('[aria-disabled]:not([aria-disabled="true"])')][0].focus();
+      }
+    }
+
     handleDocumentClick = (event) => {
       if (this.state.active && !events.targetIsDescendant(event, ReactDOM.findDOMNode(this))) {
         this.setState({ active: false, rippled: false });
@@ -187,6 +194,7 @@ const factory = (MenuItem) => {
     };
 
     handleKeyboardTrap = (event) => {
+      event.preventDefault();
       handleMenuKeyboardTrap(event, this);
     }
 
@@ -201,7 +209,7 @@ const factory = (MenuItem) => {
 
     show() {
       const { width, height } = this.menuNode.getBoundingClientRect();
-      this.setState({ active: true, width, height });
+      this.setState({ active: true, width, height }, this.focusFirstMenuItem);
     }
 
     hide() {
@@ -230,11 +238,19 @@ const factory = (MenuItem) => {
       const outlineStyle = { width: this.state.width, height: this.state.height };
       const className = classnames([theme.menu, theme[this.state.position]], {
         [theme.active]: this.state.active,
+        [theme.inactive]: !this.state.active,
         [theme.rippled]: this.state.rippled,
       }, this.props.className);
 
       return (
-        <div data-react-toolbox="menu" role="menu" className={className} style={this.getRootStyle()} tabIndex={this.getTabIndex()}>
+        <div
+          data-react-toolbox="menu"
+          role="menu"
+          className={className}
+          style={this.getRootStyle()}
+          tabIndex={this.getTabIndex()}
+          onKeyDown={this.handleKeyboardTrap}
+        >
           {this.props.outline ? <div className={theme.outline} style={outlineStyle} /> : null}
           <ul
             ref={(node) => { this.menuNode = node; }}

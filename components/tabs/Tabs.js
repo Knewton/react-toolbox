@@ -101,20 +101,22 @@ const factory = (Tab, TabContent, FontIcon) => {
     };
 
     updatePointer = (idx) => {
-      this.updatePointerAnimationFrame = requestAnimationFrame(() => {
-        if (this.navigationNode && this.navigationNode.children[idx]) {
-          const nav = this.navigationNode.getBoundingClientRect();
-          const label = this.navigationNode.children[idx].getBoundingClientRect();
-          const scrollLeft = this.navigationNode.scrollLeft;
-          this.setState({
-            pointer: {
-              top: `${nav.height}px`,
-              left: `${(label.left + scrollLeft) - nav.left}px`,
-              width: `${label.width}px`,
-            },
-          });
-        }
-      });
+      if (this.navigationNode && this.navigationNode.children[idx]) {
+        this.updatePointerAnimationFrame = requestAnimationFrame(() => {
+          if (this.navigationNode && this.navigationNode.children[idx]) {
+            const nav = this.navigationNode.getBoundingClientRect();
+            const label = this.navigationNode.children[idx].getBoundingClientRect();
+            const scrollLeft = this.navigationNode.scrollLeft;
+            this.setState({
+              pointer: {
+                top: `${nav.height}px`,
+                left: `${(label.left + scrollLeft) - nav.left}px`,
+                width: `${label.width}px`,
+              },
+            });
+          }
+        });
+      }
     }
 
     updateArrows = () => {
@@ -176,9 +178,9 @@ const factory = (Tab, TabContent, FontIcon) => {
 
     handleArrowPress(headers) {
       return (event) => {
-        if (event.key === 'ArrowRight') {
+        if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
           this.handleHeaderClick(this.getNewIndex(headers, 1));
-        } else if (event.key === 'ArrowLeft') {
+        } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
           this.handleHeaderClick(this.getNewIndex(headers, -1));
         }
       };

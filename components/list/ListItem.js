@@ -21,6 +21,7 @@ const factory = (ripple, ListItemLayout, ListItemContent) => {
       onTouchStart: PropTypes.func,
       ripple: PropTypes.bool,
       tabIndex: PropTypes.number,
+      target: PropTypes.string,
       theme: PropTypes.shape({
         listItem: PropTypes.string,
       }),
@@ -32,13 +33,20 @@ const factory = (ripple, ListItemLayout, ListItemContent) => {
       disabled: false,
       ripple: false,
       tabIndex: 0,
+      target: '_self',
     };
 
     handleClick = (event) => {
-      if (this.props.to) {
-        window.location = this.props.to;
-      } else if (this.props.onClick && !this.props.disabled) {
-        this.props.onClick(event);
+      if (this.props.to && this.isModifiedEvent(event)) {
+        return;
+      }
+      if (this.props.onClick) {
+        if (this.props.to) {
+          event.preventDefault();
+        }
+        if (!this.props.disabled) {
+          this.props.onClick(event);
+        }
       }
     };
 
@@ -47,6 +55,13 @@ const factory = (ripple, ListItemLayout, ListItemContent) => {
         event.preventDefault();
         this.handleClick(event);
       }
+    };
+
+    isModifiedEvent = (event) => {
+      if (event.metaKey || event.altKey || event.ctrlKey || event.shiftKey) {
+        return true;
+      }
+      return false;
     };
 
     groupChildren() {
@@ -91,6 +106,7 @@ const factory = (ripple, ListItemLayout, ListItemContent) => {
         onMouseDown,  // eslint-disable-line no-unused-vars
         onTouchStart, // eslint-disable-line no-unused-vars
         tabIndex,
+        target,
         theme,
         to,
         ...other
@@ -107,9 +123,9 @@ const factory = (ripple, ListItemLayout, ListItemContent) => {
           onMouseDown={onMouseDown}
           onTouchStart={onTouchStart}
           onKeyDown={this.handleEnter}
-          tabIndex={tabIndex}
+          tabIndex={to || !onClick ? -1 : tabIndex}
         >
-          {to ? <a tabIndex={-1} href={this.props.to}>{content}</a> : content}
+          {to ? <a href={this.props.to} target={target}>{content}</a> : content}
           {children.ignored}
           {altText ? <span className={theme.screenReader}>{altText}</span> : null}
         </li>
