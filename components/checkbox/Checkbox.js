@@ -10,6 +10,7 @@ import checkFactory from './Check';
 
 const factory = (Check) => {
   class Checkbox extends Component {
+
     static propTypes = {
       checked: PropTypes.bool,
       children: PropTypes.node,
@@ -38,6 +39,11 @@ const factory = (Check) => {
       disabled: false,
     };
 
+    constructor(props) {
+      super(props);
+      this._id = uuidv4();
+    }
+
     handleToggle = (event) => {
       if (event.pageX !== 0 && event.pageY !== 0) this.blur();
       if (!this.props.disabled && this.props.onChange) {
@@ -63,8 +69,8 @@ const factory = (Check) => {
       const className = classnames(theme.field, {
         [theme.disabled]: this.props.disabled,
       }, this.props.className);
-      const inputId = `input_${uuidv4()}`;
-      const labelId = `label_${uuidv4()}`;
+      const inputId = `input_${this._id}`;
+      const labelId = `label_${this._id}`;
 
       return (
         <label
